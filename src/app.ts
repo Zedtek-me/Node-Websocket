@@ -5,9 +5,7 @@ import { config } from "dotenv";
 import WebSocketService from './services/ws';
 import { MessageType } from './types/ws_types/ws';
 import connectToDatabase from './configs/database';
-
-config();
-
+import * as settings from "./settings";
 
 const app = express();
 app.use(express.json());
@@ -16,7 +14,7 @@ app.use(express.static('public'));
 
 const server = createServer(app);
 const wss = new WebSocketServer({ noServer: true });
-const PORT = process.env.PORT || 3000;
+const PORT = settings.PORT || 4000;
 
 wss.on("connection", (ws: WebSocketServer) => {
     console.log("New WebSocket connection established");
@@ -51,3 +49,11 @@ server.listen(PORT, async () => {
     await connectToDatabase();
     console.log(`Api and Ws servers are listening on port ${PORT}`);
 });
+
+server.on("error", (error: any) => {
+    if(error.code === "EADDRINUSE"){
+        console.error(`Port ${PORT} is already in use. Please use a different port.`);
+        process.exit(1);
+    }
+    console.error("Server error:", error);
+})

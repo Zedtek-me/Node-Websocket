@@ -6,8 +6,8 @@ services:
     image: node-ws-server:latest
     container_name: node-ws-server
     ports:
-      - 3000:3000
-      - 3001:3001
+      - 4000:4000
+      - 4001:4001
     restart: unless-stopped
     env_file:
       - .env
@@ -19,7 +19,7 @@ services:
     image: mongo:latest
     container_name: node-ws-mongo-db
     ports:
-      - 27017:27017
+      - 27018:27017
     volumes:
       - mongo-data:/var/lib/data
     restart: unless-stopped

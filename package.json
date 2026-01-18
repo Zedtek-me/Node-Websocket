@@ -4,7 +4,9 @@
   "description": "testing a concept",
   "main": "app.js",
   "scripts": {
-    "dev": ""
+    "build": "npx tsc tsconfig.json",
+    "start-dev": "node emitted/app.js",
+    "start-prod": "NODE_ENV=production node emitted/app.js"
   },
   "keywords": [],
   "author": "Zechariah Adebayo",
