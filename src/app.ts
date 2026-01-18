@@ -4,6 +4,7 @@ import { WebSocketServer } from 'ws';
 import { config } from "dotenv";
 import WebSocketService from './services/ws';
 import { MessageType } from './types/ws_types/ws';
+import connectToDatabase from './configs/database';
 
 config();
 
@@ -25,8 +26,8 @@ wss.on("connection", (ws: WebSocketServer) => {
     */
     const wsService = new WebSocketService(ws);
 
-    ws.on("message", (message: MessageType) => {
-        wsService.handleMessage(message.toString());
+    ws.on("message", (message: {}) => {
+        wsService.handleMessage(message);
     });
 
     ws.on("close", () => {
@@ -41,12 +42,12 @@ server.on('upgrade', (request, socket, head) => {
         socket.destroy();
         return
     }
-    // TODO: Add authentication here later, before emitting the connection event.
     wss.handleUpgrade(request, socket, head, (ws: WebSocketServer) => {
     wss.emit('connection', ws, request);
   });
 });
 
-server.listen(PORT, () => {
-  console.log(`Api and Ws servers are listening on port ${PORT}`);
+server.listen(PORT, async () => {
+    await connectToDatabase();
+    console.log(`Api and Ws servers are listening on port ${PORT}`);
 });

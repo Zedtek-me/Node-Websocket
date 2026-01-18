@@ -15,11 +15,23 @@ class WebSocketService{
         this.amqpService = new AmqpService();
         this.userService = UserService;
     }
-    public handleMessage(message: string): void {
+    public async handleMessage(message: {recipientId?}): Promise<void> {
         console.log(`Webocket message received:::::: ${message}`);
         if(this.ws){
             this.ws.send(`Echo from WebSocketService: ${message}`);
         }
+        message = JSON.parse(message.toString());
+        const recipientId = message?.recipientId || "";
+        /**TODO: construct a proper routing key for the recipient user based
+         * on the routing key generated for their private queue when they
+         * initially connected to ws server.
+        */
+       const msgType: MessageTypes = recipientId ? MessageTypes.PRIVATE: MessageTypes.GROUP;
+        await this.sendMessage(
+            message,
+            msgType,
+            recipientId
+        )
     }
 
     public async sendMessage(
@@ -39,13 +51,15 @@ class WebSocketService{
         }
         if (msgType === "private"){
             const recipientUser = await UserService.fetchUser()
-            if(!recipientUser){
+            if(!( recipientUser ? Object.keys(recipientUser).length > 0 : null)){
                 console.error(`User with ID ${recipientId} not found`);
                 return;
             }
             /**
              * fetch the recipient user queue name, then send the message to that queue via AMQP
              */
+            const recipientRoutingKey = recipientId || "";
+            this.amqpService.sendMessage(recipientRoutingKey, message);
         }
         if(msgType === "group"){
             /**

@@ -1,20 +1,19 @@
 {
-  "name": "ws",
+  "name": "mini-node-ws",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "testing a concept",
+  "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": ""
   },
   "keywords": [],
-  "author": "",
+  "author": "Zechariah Adebayo",
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
     "@types/node": "^25.0.9",
     "amqplib": "^0.10.9",
     "dotenv": "^17.2.3",
-    "typescript": "^5.9.3",
     "ws": "^8.19.0"
   },
   "dependencies": {

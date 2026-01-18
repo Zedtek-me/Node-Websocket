@@ -7,12 +7,13 @@ services:
     container_name: node-ws-server
     ports:
       - 3000:3000
-      - 3001:"3001
+      - 3001:3001
     restart: unless-stopped
     env_file:
       - .env
     depends_on:
       - mongo
+      - node-ws-broker
 
   mongo:
     image: mongo:latest
@@ -20,7 +21,7 @@ services:
     ports:
       - 27017:27017
     volumes:
-      - mongo-data:/data/db
+      - mongo-data:/var/lib/data
     restart: unless-stopped
     env_file:
       - .env

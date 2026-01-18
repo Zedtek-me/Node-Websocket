@@ -1,8 +1,9 @@
 
 export type UserType = {
-    id: string;
+    _id: string | unknown;
     username?: string;
-    email: string;
-    createdAt: Date;
-    updatedAt: Date;
+    email?: string;
+    createdAt?: Date;
+    updatedAt?: Date;
+    __v?: number;
 }

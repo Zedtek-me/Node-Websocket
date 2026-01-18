@@ -4,9 +4,10 @@
       "noImplicitAny": true,
       "removeComments": true,
       "preserveConstEnums": true,
-      "outFile": "emitted/tsc.js",
-      "sourceMap": true
+      "outFile": "emitted/app.js",
+      "sourceMap": true,
+      "rootDir": "."
     },
-    "include": ["src/**/*"],
-    "exclude": ["**/*.spec.ts"]
+    "include": ["src/**/*", "src/**/**/*.ts"],
+    "exclude": ["**/*.spec.ts", "node_modules"]
   }

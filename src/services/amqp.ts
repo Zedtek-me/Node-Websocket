@@ -1,13 +1,17 @@
 import amqp from 'amqplib';
-import { WebSocketType } from '../types/ws_types/ws';
+import { MessageType, WebSocketType } from '../types/ws_types/ws';
+import * as settings from "../settings";
 
 class AMQPService{
     private connection: amqp.Connection | null = null;
     private channel: amqp.Channel | null = null;
 
+    private retryCount: number;
+
     constructor(){
         this.connection = null;
         this.channel = null;
+        this.retryCount = 0
         this.connect();
     }
 
@@ -19,25 +23,35 @@ class AMQPService{
             // Further setup like asserting exchanges, queues, bindings, etc.
         } catch (error) {
             console.error('Failed to connect to AMQP:', error);
+            // retry logic or exit
+            if(this.retryCount >= 3){
+                throw new Error("unable to establish connection to rabbitmq!")
+            }
+            this.retryCount += 1;
+            this.connect();
         }
     }
 
     private async disconnect(){
-        // Logic to close AMQP connection
+        if(this.connection && this.channel){
+            this.channel.close();
+            this.connection.close();
+        }
     }
 
     public async sendMessage(
         routingKey: string,
-        message: string,
+        message: MessageType,
     ): Promise<void> {
         if(!this.channel){
             console.error('AMQP channel is not established');
             return;
         }
-        const exchange = 'direct_logs';
-        await this.channel.assertExchange(exchange, 'direct', { durable: false });
-        this.channel.publish(exchange, routingKey, Buffer.from(message));
-        console.log(`Sent message to exchange ${exchange} with routing key ${routingKey}: ${message}`);
+        const exchange = settings.DIRECT_EXCHANGE_NAME;
+        await this.channel.assertExchange(exchange, 'direct', { durable: true });
+        message = message.toString()
+        this.channel.publish(exchange, routingKey, Buffer.from(message.toString()));
+        console.log(`Sent message to exchange ${exchange} with routing key ${routingKey}: ${message.toString()}`);
     }
 }
 
