@@ -1,0 +1,39 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: node-ws-server:latest
+    container_name: node-ws-server
+    ports:
+      - 3000:3000
+      - 3001:"3001
+    restart: unless-stopped
+    env_file:
+      - .env
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:latest
+    container_name: node-ws-mongo-db
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo-data:/data/db
+    restart: unless-stopped
+    env_file:
+      - .env
+
+  node-ws-broker:
+    image: rabbitmq:3-management
+    container_name: node-ws-rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    restart: unless-stopped
+    env_file:
+      - .env
+
+volumes:
+  mongo-data:
