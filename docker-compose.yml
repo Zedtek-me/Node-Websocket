@@ -21,7 +21,7 @@ services:
     ports:
       - 27018:27017
     volumes:
-      - mongo-data:/var/lib/data
+      - mongo-data:/data/db
     restart: unless-stopped
     env_file:
       - .env

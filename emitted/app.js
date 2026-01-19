@@ -42,6 +42,7 @@ const ws_1 = require("ws");
 const ws_2 = __importDefault(require("./services/ws"));
 const database_1 = __importDefault(require("./configs/database"));
 const settings = __importStar(require("./settings"));
+(0, database_1.default)();
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
@@ -74,8 +75,7 @@ server.on('upgrade', (request, socket, head) => {
         wss.emit('connection', ws, request);
     });
 });
-server.listen(PORT, async () => {
-    await (0, database_1.default)();
+server.listen(PORT, () => {
     console.log(`Api and Ws servers are listening on port ${PORT}`);
 });
 server.on("error", (error) => {

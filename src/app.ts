@@ -7,6 +7,8 @@ import { MessageType } from './types/ws_types/ws';
 import connectToDatabase from './configs/database';
 import * as settings from "./settings";
 
+connectToDatabase();
+
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -45,8 +47,7 @@ server.on('upgrade', (request, socket, head) => {
   });
 });
 
-server.listen(PORT, async () => {
-    await connectToDatabase();
+server.listen(PORT, () => {
     console.log(`Api and Ws servers are listening on port ${PORT}`);
 });
 
