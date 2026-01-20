@@ -53,6 +53,9 @@ class WebSocketService {
              */
         }
     }
+    async handleClosedsocket() {
+        this.amqpService.disconnect();
+    }
 }
 exports.default = WebSocketService;
 //# sourceMappingURL=ws.js.map

@@ -38,7 +38,7 @@ class AMQPService{
         }
     }
 
-    private async disconnect(){
+    public async disconnect(){
         if(this.connection && this.channel){
             this.channel.close();
             this.connection.close();

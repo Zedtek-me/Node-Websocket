@@ -39,7 +39,8 @@ wss.on("connection", (ws: WebSocketServer, request: { [key: string]: string | an
         wsService.handleMessage(message);
     });
 
-    ws.on("close", () => {
+    ws.on("close", async () => {
+        await wsService.handleClosedsocket();
         console.log("WebSocket connection closed");
     });
 })

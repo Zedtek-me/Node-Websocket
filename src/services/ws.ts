@@ -67,6 +67,10 @@ class WebSocketService{
              */
         }
     }
+
+    public async handleClosedsocket(){
+            this.amqpService.disconnect()
+    }
 }
 
 
