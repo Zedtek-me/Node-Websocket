@@ -6,6 +6,7 @@ import WebSocketService from './services/ws';
 import { MessageType } from './types/ws_types/ws';
 import connectToDatabase from './configs/database';
 import * as settings from "./settings";
+import base from "./routes/index";
 
 connectToDatabase();
 
@@ -13,6 +14,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
+app.use(base);
 
 const server = createServer(app);
 const wss = new WebSocketServer({ noServer: true });

@@ -38,14 +38,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
 const settings = __importStar(require("../settings"));
-const connectToDatabase = async () => {
+const connectToDatabase = async (retries = 5) => {
     try {
         await mongoose_1.default.connect(settings.MONGO_DB_CONNECTION_STRING);
         console.log("Connected to MongoDB");
     }
     catch (error) {
         console.error("Error connecting to MongoDB:", error);
-        process.exit(1);
+        if (retries === 0)
+            process.exit(1);
+        setTimeout(() => connectToDatabase(retries - 1), 5000);
     }
 };
 exports.default = connectToDatabase;

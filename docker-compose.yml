@@ -14,6 +14,8 @@ services:
     depends_on:
       - mongo
       - node-ws-broker
+    volumes:
+      - ./:/app
 
   mongo:
     image: mongo:latest

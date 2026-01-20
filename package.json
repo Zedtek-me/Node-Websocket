@@ -4,7 +4,7 @@
   "description": "testing a concept",
   "main": "app.js",
   "scripts": {
-    "build": "npx tsc tsconfig.json",
+    "build": "npx tsc",
     "start-dev": "node emitted/app.js",
     "start-prod": "NODE_ENV=production node emitted/app.js"
   },
@@ -16,6 +16,7 @@
     "@types/node": "^25.0.9",
     "amqplib": "^0.10.9",
     "dotenv": "^17.2.3",
+    "typescript": "^5.9.3",
     "ws": "^8.19.0"
   },
   "dependencies": {

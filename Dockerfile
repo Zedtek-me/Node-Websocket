@@ -1,8 +1,7 @@
 FROM node
 RUN apt-get update -y
 WORKDIR /app
-COPY . /app/
-COPY src/configs/start.sh ./start.sh
-RUN chmod +x ./start.sh
+COPY . .
+RUN chmod +x ./src/configs/start.sh
 RUN npm install
-ENTRYPOINT ["sh", "-c", "./start.sh"]
+ENTRYPOINT ["sh", "-c", "./src/configs/start.sh"]
