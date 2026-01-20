@@ -4,6 +4,7 @@ import { WebSocketServer } from 'ws';
 import { config } from "dotenv";
 import WebSocketService from './services/ws';
 import { MessageType } from './types/ws_types/ws';
+import { UserType } from './types/user_types/users';
 import connectToDatabase from './configs/database';
 import * as settings from "./settings";
 import base from "./routes/index";
@@ -20,15 +21,21 @@ const server = createServer(app);
 const wss = new WebSocketServer({ noServer: true });
 const PORT = settings.PORT || 4000;
 
-wss.on("connection", (ws: WebSocketServer) => {
-    console.log("New WebSocket connection established");
+wss.on("connection", (ws: WebSocketServer, request: { [key: string]: string | any}) => {
+    console.log("New WebSocket connection established\n");
     // TODO: Add authentication and other connection setup here
-    /** 
-     * Other setups include creating a queue for each connection, attaching it to a direct exchange, etc.
-    */
-    const wsService = new WebSocketService(ws);
+    ws.send("Connection to websocket successfully established!")
+    const { searchParams } = new URL(request.url, `http://${request.headers.host}`)
+    console.log("searchParams from url:::: ", searchParams);
+    const email: string | null = searchParams?.get("email");
+    const dummyUser: UserType = {
+        _id: `random_test_id_${email}`,
+        username: `test user ${email}`,
+        email: email
+    }
+    const wsService = new WebSocketService(ws, dummyUser);
 
-    ws.on("message", (message: {}) => {
+    ws.on("message", (message: MessageType) => {
         wsService.handleMessage(message);
     });
 

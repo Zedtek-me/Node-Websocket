@@ -1,8 +1,8 @@
 import { WebSocketType, MessageType, MessageTypes } from "../types/ws_types/ws";
+import { UserType } from "../types/user_types/users";
 import { WebSocketServer } from "ws";
 import AmqpService from "./amqp";
 import UserService from "./user_service";
-import User from "../models/users";
 
 class WebSocketService{
 
@@ -10,22 +10,22 @@ class WebSocketService{
     public amqpService: AmqpService;
     private userService: UserService;
 
-    constructor(ws: WebSocketType){
+    constructor(ws: WebSocketType, userInfo?: UserType){
         this.ws = ws;
-        this.amqpService = new AmqpService();
+        this.amqpService = new AmqpService(userInfo, ws);
         this.userService = UserService;
     }
-    public async handleMessage(message: {recipientId?}): Promise<void> {
+    public async handleMessage(message: MessageType): Promise<void> {
         console.log(`Webocket message received:::::: ${message}`);
-        if(this.ws){
-            this.ws.send(`Echo from WebSocketService: ${message}`);
-        }
         message = JSON.parse(message.toString());
-        const recipientId = message?.recipientId || "";
+        let recipientId = null;
         /**TODO: construct a proper routing key for the recipient user based
          * on the routing key generated for their private queue when they
          * initially connected to ws server.
         */
+       if (typeof message !== "string"){
+            recipientId = message?.recipientId
+       }
        const msgType: MessageTypes = recipientId ? MessageTypes.PRIVATE: MessageTypes.GROUP;
         await this.sendMessage(
             message,
@@ -50,11 +50,11 @@ class WebSocketService{
             return;
         }
         if (msgType === "private"){
-            const recipientUser = await UserService.fetchUser()
-            if(!( recipientUser ? Object.keys(recipientUser).length > 0 : null)){
-                console.error(`User with ID ${recipientId} not found`);
-                return;
-            }
+            // const recipientUser = await UserService.fetchUser()
+            // if(!( recipientUser ? Object.keys(recipientUser).length > 0 : null)){
+            //     console.error(`User with ID ${recipientId} not found`);
+            //     return;
+            // }
             /**
              * fetch the recipient user queue name, then send the message to that queue via AMQP
              */

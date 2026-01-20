@@ -5,6 +5,6 @@ var MessageTypes;
 (function (MessageTypes) {
     MessageTypes["PRIVATE"] = "private";
     MessageTypes["GROUP"] = "group";
-    MessageTypes["BROADCAST"] = "broadcast";
+    MessageTypes["BROADCAST"] = "broadcasts";
 })(MessageTypes || (exports.MessageTypes = MessageTypes = {}));
 //# sourceMappingURL=ws.js.map

@@ -52,13 +52,19 @@ app.use(index_1.default);
 const server = (0, http_1.createServer)(app);
 const wss = new ws_1.WebSocketServer({ noServer: true });
 const PORT = settings.PORT || 4000;
-wss.on("connection", (ws) => {
-    console.log("New WebSocket connection established");
+wss.on("connection", (ws, request) => {
+    console.log("New WebSocket connection established\n");
     // TODO: Add authentication and other connection setup here
-    /**
-     * Other setups include creating a queue for each connection, attaching it to a direct exchange, etc.
-    */
-    const wsService = new ws_2.default(ws);
+    ws.send("Connection to websocket successfully established!");
+    const { searchParams } = new URL(request.url, `http://${request.headers.host}`);
+    console.log("searchParams from url:::: ", searchParams);
+    const email = searchParams === null || searchParams === void 0 ? void 0 : searchParams.get("email");
+    const dummyUser = {
+        _id: `random_test_id_${email}`,
+        username: `test user ${email}`,
+        email: email
+    };
+    const wsService = new ws_2.default(ws, dummyUser);
     ws.on("message", (message) => {
         wsService.handleMessage(message);
     });

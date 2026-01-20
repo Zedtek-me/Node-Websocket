@@ -3,7 +3,7 @@ import { UserType } from "../types/user_types/users";
 
 class UserService{
 
-    public static async fetchUser(): Promise<UserType | null>{
+    public static async fetchUser(): Promise<any>{
         try{
             let user = await User.findOne({});
             if(user)return user.toObject();
